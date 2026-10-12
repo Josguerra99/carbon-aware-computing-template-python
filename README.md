@@ -4,7 +4,7 @@ Servidor de pronóstico del taller (puerto **3916**). El sitio del taller lo ope
 
 ## Setup
 
-Desde la raíz del repo. Crea `.env` si no existe, crea `.venv` e instala `requirements.txt`. En Windows, setup también intenta abrir el puerto **3916** en la red **privada** (solo LAN).
+Desde la raíz del repo:
 
 **Windows**
 
@@ -24,11 +24,9 @@ scripts\windows\open-lan-firewall.cmd 3916
 bash scripts/ubuntu/setup.sh
 ```
 
-Después de setup, edita `.env` y pon **`MAIN_SERVER_URL`** con la URL que te dé el facilitador. Regístrate en el sitio del taller (`/register`) con la IP de tu PC y el puerto **3916**. Marca la Wi‑Fi como red **Privada** en Windows.
+Luego edita `.env` y pon **`MAIN_SERVER_URL`** con la URL del facilitador. Regístrate en el taller (`/register`) con la IP de tu PC. En Windows, usa Wi‑Fi **Privada**.
 
 ## Run
-
-Carga `.env`, usa el venv y arranca uvicorn en `0.0.0.0:PORT` (sin recarga automática).
 
 **Windows**
 
@@ -43,6 +41,10 @@ bash scripts/ubuntu/run.sh
 ```
 
 ## Setup manual
+
+El script de setup hace: crear `.env` si no existe, crear `.venv`, instalar `requirements.txt`, y en Windows la regla de firewall para el puerto **3916** (red privada, solo LAN).
+
+Si lo haces a mano:
 
 | Requisito | Windows | Ubuntu |
 | --- | --- | --- |
