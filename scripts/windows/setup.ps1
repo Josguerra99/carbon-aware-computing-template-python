@@ -85,12 +85,30 @@ function Find-Python {
         }
     }
     foreach ($exe in Get-WindowsPythonInstallCandidates) {
-        $cmd = ,@($exe)
+        $cmd = @($exe)
         if (Test-PythonCommand -Command $cmd) {
             return $cmd
         }
     }
     return $null
+}
+
+function Invoke-ResolvedPython {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string[]]$PythonCommand,
+        [Parameter(Mandatory = $true)]
+        [string[]]$Arguments
+    )
+    $exe = $PythonCommand[0]
+    $prefix = @()
+    if ($PythonCommand.Length -gt 1) {
+        $prefix = $PythonCommand[1..($PythonCommand.Length - 1)]
+    }
+    & $exe @prefix @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
 }
 
 function Install-PythonWithWinget {
@@ -125,7 +143,7 @@ if (-not $py) {
 
 Write-Host "Using: $($py -join ' ')"
 
-& @py -m venv .venv
+Invoke-ResolvedPython -PythonCommand $py -Arguments @("-m", "venv", ".venv")
 $venvPy = Join-Path $Root ".venv\Scripts\python.exe"
 if (-not (Test-Path $venvPy)) {
     throw "Failed to create .venv at $venvPy"
