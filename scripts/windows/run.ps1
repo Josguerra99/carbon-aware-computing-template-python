@@ -28,5 +28,4 @@ $port = if ($env:PORT) { $env:PORT } else { "3916" }
 & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "ensure-lan-access.ps1") `
     -ProgramPath $venvPy -Port ([int]$port)
 Write-Host "Starting forecast server (uvicorn) on port $port..."
-Write-Host "Si Windows pregunta por el firewall: elige Red privada y Permitir." -ForegroundColor DarkYellow
 & $venvPy -m uvicorn src.server.index:app --host 0.0.0.0 --port $port

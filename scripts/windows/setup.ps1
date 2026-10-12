@@ -133,5 +133,9 @@ if (-not (Test-Path $venvPy)) {
 & $venvPy -m pip install --upgrade pip
 & $venvPy -m pip install -r requirements.txt
 
+& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "prompt-lan-firewall.ps1") `
+    -Exe $venvPy -ArgumentList @("-m", "uvicorn", "src.server.index:app", "--host", "0.0.0.0", "--port", "3916") `
+    -WorkingDirectory $Root -Port 3916
+
 Write-Host ""
 Write-Host "Setup complete. Run: scripts\windows\run.cmd" -ForegroundColor Green
