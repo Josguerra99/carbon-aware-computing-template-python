@@ -36,7 +36,7 @@ bash scripts/ubuntu/run.sh
 
 ## Windows y la LAN del taller
 
-**`setup.cmd`** arranca uvicorn un momento (sin admin) para el aviso de **Windows Defender**: **Red privada** + **Permitir**. **`run.cmd`** solo pide UAC si quedó **Block** en Private para **python.exe**.
+**`run.cmd`**: aviso, luego fuerza el popup de **Defender** la primera vez (`.local\lan-defender-ok`), y **UAC** solo si quedó **Block** en Private para **python.exe**.
 
 ## Setup manual
 

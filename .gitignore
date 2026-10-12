@@ -6,4 +6,5 @@ __pycache__/
 cache/
 data/
 .env
+.local/
 src/workshop/

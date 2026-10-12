@@ -25,7 +25,24 @@ if (Test-Path ".env") {
 }
 
 $port = if ($env:PORT) { $env:PORT } else { "3916" }
-& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "ensure-lan-access.ps1") `
-    -ProgramPath $venvPy -ServerPort ([int]$port)
+
+Write-Host ""
+Write-Host "=== Red del taller (Windows) ===" -ForegroundColor Cyan
+Write-Host "1) Wi-Fi en perfil PRIVADA."
+Write-Host "2) Si Windows pregunta por Python: RED PRIVADA y PERMITIR (no bloquear en privada)." -ForegroundColor Yellow
+Write-Host ""
+
+$lanMarker = Join-Path $Root ".local\lan-defender-ok"
+if (-not (Test-Path $lanMarker)) {
+    New-Item -ItemType Directory -Path (Split-Path $lanMarker) -Force | Out-Null
+    & (Join-Path $PSScriptRoot "prompt-lan-firewall.ps1") `
+        -Exe $venvPy `
+        -ProcessArguments @("-m", "uvicorn", "src.server.index:app", "--host", "0.0.0.0", "--port", "$port") `
+        -WorkingDirectory $Root -Port ([int]$port)
+    Set-Content -Path $lanMarker -Value (Get-Date -Format "o") -Encoding utf8
+}
+
+& (Join-Path $PSScriptRoot "ensure-lan-access.ps1") -ProgramPath $venvPy -ServerPort ([int]$port)
+
 Write-Host "Starting forecast server (uvicorn) on port $port..."
 & $venvPy -m uvicorn src.server.index:app --host 0.0.0.0 --port $port
