@@ -133,5 +133,8 @@ if (-not (Test-Path $venvPy)) {
 & $venvPy -m pip install --upgrade pip
 & $venvPy -m pip install -r requirements.txt
 
+$firewallCmd = Join-Path $PSScriptRoot "open-lan-firewall.cmd"
+& cmd.exe /c "`"$firewallCmd`" 3916"
+
 Write-Host ""
 Write-Host "Setup complete. Run: scripts\windows\run.cmd" -ForegroundColor Green

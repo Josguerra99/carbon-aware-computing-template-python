@@ -4,12 +4,18 @@ Servidor de pronóstico del taller (puerto **3916**). El sitio del taller lo ope
 
 ## Setup
 
-Desde la raíz del repo. Crea `.env` si no existe, crea `.venv` e instala `requirements.txt`.
+Desde la raíz del repo. Crea `.env` si no existe, crea `.venv` e instala `requirements.txt`. En Windows, setup también intenta abrir el puerto **3916** en la red **privada** (solo LAN).
 
-**Windows** (usa `.cmd` para evitar errores del perfil de PowerShell 5.1)
+**Windows**
 
 ```bat
 scripts\windows\setup.cmd
+```
+
+Si la regla de firewall falla, abre **Símbolo del sistema como administrador** y vuelve a ejecutar setup, o:
+
+```bat
+scripts\windows\open-lan-firewall.cmd 3916
 ```
 
 **Ubuntu**
@@ -18,7 +24,7 @@ scripts\windows\setup.cmd
 bash scripts/ubuntu/setup.sh
 ```
 
-Después de setup, edita `.env` y pon **`MAIN_SERVER_URL`** con la URL que te dé el facilitador. Regístrate en el sitio del taller (`/register`) con la IP de tu PC y el puerto **3916**.
+Después de setup, edita `.env` y pon **`MAIN_SERVER_URL`** con la URL que te dé el facilitador. Regístrate en el sitio del taller (`/register`) con la IP de tu PC y el puerto **3916**. Marca la Wi‑Fi como red **Privada** en Windows.
 
 ## Run
 
@@ -43,13 +49,12 @@ bash scripts/ubuntu/run.sh
 | **Python 3.10+** (3.11+ recomendado) | [python.org](https://www.python.org/downloads/) o `winget install Python.Python.3.12` | `sudo apt install python3 python3-venv python3-pip` |
 | **Dependencias** | venv + `pip install -r requirements.txt` | Igual |
 | **Config** | Copia `.env.example` → `.env` y ajusta `MAIN_SERVER_URL` | Igual |
+| **Firewall (LAN)** | `scripts\windows\open-lan-firewall.cmd 3916` (admin si hace falta) | Abre el puerto en `ufw` si usas firewall |
 
 Arranque manual:
 
 ```bash
 python -m venv .venv
-# Windows: .venv\Scripts\activate
-# Ubuntu: source .venv/bin/activate
-pip install -r requirements.txt
-python -m uvicorn src.server.index:app --host 0.0.0.0 --port 3916
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python -m uvicorn src.server.index:app --host 0.0.0.0 --port 3916
 ```

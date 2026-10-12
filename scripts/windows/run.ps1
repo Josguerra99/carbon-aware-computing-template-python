@@ -25,5 +25,7 @@ if (Test-Path ".env") {
 }
 
 $port = if ($env:PORT) { $env:PORT } else { "3916" }
+$firewallCmd = Join-Path $PSScriptRoot "open-lan-firewall.cmd"
+& cmd.exe /c "`"$firewallCmd`" $port"
 Write-Host "Starting forecast server (uvicorn) on port $port..."
 & $venvPy -m uvicorn src.server.index:app --host 0.0.0.0 --port $port
