@@ -36,7 +36,7 @@ bash scripts/ubuntu/run.sh
 
 ## Windows y la LAN del taller
 
-**`run.cmd`**: aviso, luego fuerza el popup de **Defender** la primera vez (`.local\lan-defender-ok`), y **UAC** solo si quedó **Block** en Private para **python.exe**.
+**`run.cmd`** solo arranca el servidor. Si la LAN falla, **`scripts\windows\fix-lan-access.cmd`** (admin/UAC) corrige **python.exe** en red privada.
 
 ## Setup manual
 
@@ -49,7 +49,7 @@ Si lo haces a mano:
 | **Python 3.10+** (3.11+ recomendado) | [python.org](https://www.python.org/downloads/) o `winget install Python.Python.3.12` | `sudo apt install python3 python3-venv python3-pip` |
 | **Dependencias** | venv + `pip install -r requirements.txt` | Igual |
 | **Config** | Copia `.env.example` → `.env` y ajusta `MAIN_SERVER_URL` | Igual |
-| **Firewall (LAN)** | `scripts\windows\open-lan-firewall.cmd 3916` (admin si hace falta) | Abre el puerto en `ufw` si usas firewall |
+| **Firewall (LAN)** | `scripts\windows\fix-lan-access.cmd` si la LAN falla | Abre el puerto en `ufw` si usas firewall |
 
 Arranque manual:
 
