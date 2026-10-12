@@ -11,21 +11,42 @@ Write-Host ""
 
 & (Join-Path $PSScriptRoot "../ensure-env.ps1")
 
+function Test-PythonInvocation {
+    param([string[]]$Command)
+    $exe = $Command[0]
+    if (-not (Get-Command $exe -ErrorAction SilentlyContinue)) {
+        return $false
+    }
+    $args = @()
+    if ($Command.Length -gt 1) {
+        $args = $Command[1..($Command.Length - 1)]
+    }
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        & $exe @args -c "import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)" 2>$null | Out-Null
+        return $LASTEXITCODE -eq 0
+    } catch {
+        return $false
+    } finally {
+        $ErrorActionPreference = $prev
+    }
+}
+
 function Find-Python {
-    $candidates = @("py -3", "python", "python3")
-    foreach ($name in $candidates) {
-        $parts = $name -split " "
-        if ($parts.Count -eq 2) {
-            & py -3 -c "import sys; print(sys.version)" 2>$null | Out-Null
-            if ($LASTEXITCODE -eq 0) { return @("py", "-3") }
-        } else {
-            if (Get-Command $name -ErrorAction SilentlyContinue) {
-                & $name -c "import sys; print(sys.version)" 2>$null | Out-Null
-                if ($LASTEXITCODE -eq 0) { return @($name) }
-            }
+    $candidates = @(
+        ,@("py", "-3")
+        ,@("python")
+        ,@("python3")
+    )
+    foreach ($cmd in $candidates) {
+        if (Test-PythonInvocation -Command $cmd) {
+            return $cmd
         }
     }
-    Write-Host "Python not found. Install from https://www.python.org/downloads/ or: winget install Python.Python.3.12" -ForegroundColor Yellow
+    Write-Host "Python 3.10+ not found on PATH." -ForegroundColor Yellow
+    Write-Host "Install: https://www.python.org/downloads/ (mark 'Add python.exe to PATH')"
+    Write-Host "Or: winget install Python.Python.3.12"
     throw "Python 3 is required."
 }
 
