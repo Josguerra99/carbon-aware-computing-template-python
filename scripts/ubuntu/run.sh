@@ -22,5 +22,5 @@ if [[ -f .env ]]; then
 fi
 
 PORT="${PORT:-3916}"
-echo "Starting forecast server (uvicorn) on port ${PORT}..."
-exec python -m uvicorn src.server.index:app --host 0.0.0.0 --port "$PORT"
+echo "Starting forecast server (uvicorn --reload) on port ${PORT}..."
+exec python -m uvicorn src.server.index:app --host 0.0.0.0 --port "$PORT" --reload

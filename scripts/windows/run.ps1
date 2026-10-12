@@ -42,5 +42,5 @@ if ($fixPermissions) {
     & (Join-Path $PSScriptRoot "ensure-lan-access.ps1") -ProgramPath $venvPy -ServerPort ([int]$port) -Force
 }
 
-Write-Host "Starting forecast server (uvicorn) on port $port..."
-& $venvPy -m uvicorn src.server.index:app --host 0.0.0.0 --port $port
+Write-Host "Starting forecast server (uvicorn --reload) on port $port..."
+& $venvPy -m uvicorn src.server.index:app --host 0.0.0.0 --port $port --reload

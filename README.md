@@ -56,5 +56,5 @@ Arranque manual:
 ```bash
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
-.venv\Scripts\python -m uvicorn src.server.index:app --host 0.0.0.0 --port 3916
+.venv\Scripts\python -m uvicorn src.server.index:app --host 0.0.0.0 --port 3916 --reload
 ```
