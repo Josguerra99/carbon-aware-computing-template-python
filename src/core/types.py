@@ -1,6 +1,38 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Literal
+from typing import Literal, TypedDict
+
+
+class GhiSlotJson(TypedDict, total=False):
+    time: str
+    start: str
+    ghiWm2: float
+    cloudCoverPct: float | None
+    temperatureC: float | None
+
+
+class GhiSeriesJson(TypedDict, total=False):
+    datasetId: str
+    location: str
+    latitude: float
+    longitude: float
+    unit: str
+    source: str
+    slots: list[GhiSlotJson]
+    csvFingerprint: str
+
+
+class HistoricDatasetInfo(TypedDict, total=False):
+    id: str
+    name: str
+    city: str
+    country: str
+    latitude: float
+    longitude: float
+    timezone: str
+    kind: Literal["department", "country"]
 
 
 @dataclass
@@ -16,19 +48,12 @@ class GhiSlot:
 
 @dataclass
 class GhiHistoric:
-    dataset_id: str | None
     latitude: float
     longitude: float
     slots: list[GhiSlot]
+    dataset_id: str | None = None
 
 
-@dataclass
-class HistoricDatasetInfo:
-    id: str
-    name: str
-    city: str
-    country: str
-    latitude: float
-    longitude: float
-    timezone: str
-    kind: Literal["department", "country"]
+class ForecastPoint(TypedDict):
+    time: str
+    predWm2: float
