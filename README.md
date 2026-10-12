@@ -36,7 +36,7 @@ bash scripts/ubuntu/run.sh
 
 ## Windows y la LAN del taller
 
-**`run.cmd`** solo arranca el servidor. Si la LAN falla, **`scripts\windows\fix-lan-access.cmd`** (admin/UAC) corrige **python.exe** en red privada.
+**`run.cmd`** arranca el servidor. Si la LAN falla: **`run.cmd --fix-permissions`** (UAC) corrige **python.exe** en red privada y arranca.
 
 ## Setup manual
 
@@ -49,7 +49,7 @@ Si lo haces a mano:
 | **Python 3.10+** (3.11+ recomendado) | [python.org](https://www.python.org/downloads/) o `winget install Python.Python.3.12` | `sudo apt install python3 python3-venv python3-pip` |
 | **Dependencias** | venv + `pip install -r requirements.txt` | Igual |
 | **Config** | Copia `.env.example` → `.env` y ajusta `MAIN_SERVER_URL` | Igual |
-| **Firewall (LAN)** | `scripts\windows\fix-lan-access.cmd` si la LAN falla | Abre el puerto en `ufw` si usas firewall |
+| **Firewall (LAN)** | `run.cmd --fix-permissions` si la LAN falla | Abre el puerto en `ufw` si usas firewall |
 
 Arranque manual:
 

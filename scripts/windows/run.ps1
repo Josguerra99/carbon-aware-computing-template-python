@@ -1,7 +1,19 @@
 #Requires -Version 5.1
+param(
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$RemainingArgs
+)
+
 $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "../..")
 Set-Location $Root
+
+$fixPermissions = $false
+foreach ($a in @($RemainingArgs)) {
+    if ($a -eq "--fix-permissions" -or $a -eq "-FixPermissions") {
+        $fixPermissions = $true
+    }
+}
 
 & (Join-Path $PSScriptRoot "../ensure-env.ps1")
 
@@ -25,5 +37,10 @@ if (Test-Path ".env") {
 }
 
 $port = if ($env:PORT) { $env:PORT } else { "3916" }
+
+if ($fixPermissions) {
+    & (Join-Path $PSScriptRoot "ensure-lan-access.ps1") -ProgramPath $venvPy -ServerPort ([int]$port) -Force
+}
+
 Write-Host "Starting forecast server (uvicorn) on port $port..."
 & $venvPy -m uvicorn src.server.index:app --host 0.0.0.0 --port $port
