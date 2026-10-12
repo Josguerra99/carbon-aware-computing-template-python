@@ -6,10 +6,10 @@ Servidor de pronóstico del taller (puerto **3916**). El sitio del taller lo ope
 
 Desde la raíz del repo. Crea `.env` si no existe, crea `.venv` e instala `requirements.txt`.
 
-**Windows**
+**Windows** (usa `.cmd` para evitar errores del perfil de PowerShell 5.1)
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/windows/setup.ps1
+```bat
+scripts\windows\setup.cmd
 ```
 
 **Ubuntu**
@@ -26,8 +26,8 @@ Carga `.env`, usa el venv y arranca uvicorn en `0.0.0.0:PORT` (sin recarga autom
 
 **Windows**
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/windows/run.ps1
+```bat
+scripts\windows\run.cmd
 ```
 
 **Ubuntu**

@@ -8,7 +8,7 @@ Set-Location $Root
 $venvPy = Join-Path $Root ".venv\Scripts\python.exe"
 if (-not (Test-Path $venvPy)) {
     Write-Host ".venv missing - running setup..."
-    & (Join-Path $PSScriptRoot "setup.ps1")
+    powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "setup.ps1")
 }
 
 if (Test-Path ".env") {
