@@ -1,0 +1,5 @@
+# Optional GPU (NVIDIA CUDA). Same role as @tensorflow/tfjs-node-gpu in the Node template.
+# After the normal setup, replace the CPU wheel:
+#   pip uninstall -y tensorflow
+#   pip install -r requirements-tf-gpu.txt
+tensorflow[and-cuda]>=2.18.0,<2.19
