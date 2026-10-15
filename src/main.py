@@ -6,7 +6,7 @@ from src.core.prediction_model import PredictionModel
 from src.core.types import GhiSlot
 
 
-class SimplePredictionModel(PredictionModel):
+class MyPredictionModel(PredictionModel):
     async def train(self, training_data: list[GhiSlot]) -> None:
         pass
 
@@ -14,4 +14,4 @@ class SimplePredictionModel(PredictionModel):
         return 0.0
 
 
-workshop_model = SimplePredictionModel()
+workshop_model = MyPredictionModel()
