@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import random
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any
@@ -26,17 +25,8 @@ class TfTrainingConfig:
 default_tf_training_config = TfTrainingConfig()
 
 
-def _day_of_year_utc(timestamp: datetime) -> int:
-    if timestamp.tzinfo is None:
-        timestamp = timestamp.replace(tzinfo=timezone.utc)
-    utc = timestamp.astimezone(timezone.utc)
-    start = datetime(utc.year, 1, 1, tzinfo=timezone.utc)
-    day = datetime(utc.year, utc.month, utc.day, tzinfo=timezone.utc)
-    return int((day - start).total_seconds() // 86_400) + 1
-
-
 def _solar_hour_one_hot(timestamp: datetime, longitude: float) -> list[float]:
-    hour = int(MathHelper.solar_hour(timestamp, longitude))
+    hour = int(MathHelper.solar_hour(timestamp, longitude)) % 24
     flags = [0.0] * 24
     flags[hour] = 1.0
     return flags
@@ -47,19 +37,35 @@ def feature_vector(timestamp: datetime, latitude: float, longitude: float) -> li
         timestamp = timestamp.replace(tzinfo=timezone.utc)
     return [
         *_solar_hour_one_hot(timestamp, longitude),
-        float(_day_of_year_utc(timestamp)),
+        float(MathHelper.day_of_year_utc(timestamp)),
         latitude,
         longitude,
         float(timestamp.astimezone(timezone.utc).year),
     ]
 
 
+def _mulberry32(seed: int):
+    """Deterministic shuffle (matches TypeScript tfCommon mulberry32)."""
+    state = seed & 0xFFFFFFFF
+
+    def rng() -> float:
+        nonlocal state
+        state = (state + 0x6D2B79F5) & 0xFFFFFFFF
+        t = ((state ^ (state >> 15)) * (1 | state)) & 0xFFFFFFFF
+        t = (t + ((t ^ (t >> 7)) * (61 | t))) & 0xFFFFFFFF
+        return ((t ^ (t >> 14)) & 0xFFFFFFFF) / 4294967296
+
+    return rng
+
+
 def _sample_rows(rows: list[Any], max_samples: int, seed: int) -> list[Any]:
     if len(rows) <= max_samples:
         return rows
-    rng = random.Random(seed)
+    rng = _mulberry32(seed)
     indices = list(range(len(rows)))
-    rng.shuffle(indices)
+    for i in range(len(indices) - 1, 0, -1):
+        j = int(rng() * (i + 1))
+        indices[i], indices[j] = indices[j], indices[i]
     return [rows[i] for i in indices[:max_samples]]
 
 

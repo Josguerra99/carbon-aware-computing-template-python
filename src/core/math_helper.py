@@ -1,17 +1,21 @@
 from __future__ import annotations
 
 import math
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Callable
 
 
 class MathHelper:
     @staticmethod
     def day_of_year_utc(timestamp: datetime) -> int:
-        year = timestamp.year
-        start = datetime(year, 1, 1, tzinfo=timestamp.tzinfo)
-        day = datetime(year, timestamp.month, timestamp.day, tzinfo=timestamp.tzinfo)
-        return int((day - start).total_seconds() // 86_400) + 1
+        """Same numbering as TypeScript MathHelper.dayOfYearUtc / tfCommon dayOfYearUtc."""
+        if timestamp.tzinfo is None:
+            timestamp = timestamp.replace(tzinfo=timezone.utc)
+        utc = timestamp.astimezone(timezone.utc)
+        year = utc.year
+        start = datetime(year - 1, 12, 31, tzinfo=timezone.utc)
+        day = datetime(year, utc.month, utc.day, tzinfo=timezone.utc)
+        return int((day - start).total_seconds() // 86_400)
 
     @staticmethod
     def _solve_system(matrix: list[list[float]], vector: list[float]) -> list[float] | None:

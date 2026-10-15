@@ -1,21 +1,11 @@
 from __future__ import annotations
 
 import math
-import random
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any
 
 from .math_helper import MathHelper
 from .tf_common import TfTrainingConfig, _sample_rows
-
-
-def _day_of_year_utc(timestamp: datetime) -> int:
-    if timestamp.tzinfo is None:
-        timestamp = timestamp.replace(tzinfo=timezone.utc)
-    utc = timestamp.astimezone(timezone.utc)
-    start = datetime(utc.year, 1, 1, tzinfo=timezone.utc)
-    day = datetime(utc.year, utc.month, utc.day, tzinfo=timezone.utc)
-    return int((day - start).total_seconds() // 86_400) + 1
 
 if TYPE_CHECKING:
     from .types import GhiSlot
@@ -37,7 +27,7 @@ def enhanced_feature_vector(timestamp: datetime, latitude: float, longitude: flo
         timestamp = timestamp.replace(tzinfo=timezone.utc)
     hour = MathHelper.solar_hour(timestamp, longitude)
     solar_angle = (2 * math.pi * hour) / 24
-    doy = _day_of_year_utc(timestamp)
+    doy = MathHelper.day_of_year_utc(timestamp)
     doy_angle = (2 * math.pi * doy) / 365.25
     unix_days = timestamp.astimezone(timezone.utc).timestamp() / 86_400
     return [
